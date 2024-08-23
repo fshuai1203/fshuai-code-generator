@@ -21,6 +21,7 @@ public class DynamicGenerator {
     public static void main(String[] args) throws IOException, TemplateException {
 
         String projectPath = System.getProperty("user.dir");
+        System.out.println("当前工作目录" + projectPath);
         String inputPath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
         String outputPath = projectPath + File.separator + "MainTemplate.java";
 
