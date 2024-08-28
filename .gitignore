@@ -77,14 +77,15 @@ buildNumber.properties
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+ .idea/artifacts
+ .idea/compiler.xml
+ .idea/jarRepositories.xml
+ .idea/modules.xml
+ .idea/*.iml
+ .idea/modules
+ *.iml
+ *.ipr
+ .idea/*.xml
 
 # CMake
 cmake-build-*/
@@ -150,3 +151,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+/fshuai--generator-maker/generated/
+/.idea/
+/fshuai--generator-basic/.idea/
+/fshuai--generator-maker/.idea/
+/fshuai-gengerator-demo-projects/.idea/
+!/.gitignore
+*.iml
