@@ -5,9 +5,11 @@
   "version": "1.0",
   "author": "fshuai",
   "createTime": "2024-08-28",
+  "useGit": true,
   "fileConfig": {
-    "inputRootPath": "/Users/fengshuai/Documents/project/fshuai-code-generator/fshuai-gengerator-demo-projects/acm-template-pro",
+    "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
+    "sourceRootPath": "/Users/fengshuai/Documents/project/fshuai-code-generator/fshuai-gengerator-demo-projects/acm-template-pro",
     "type": "dir",
     "files": [
       {

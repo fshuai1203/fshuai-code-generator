@@ -17,12 +17,14 @@ public class Meta {
     private String createTime;
     private FileConfigDTO fileConfig;
     private ModelConfigDTO modelConfig;
+    private Boolean useGit;
 
     @NoArgsConstructor
     @Data
     public static class FileConfigDTO {
         private String inputRootPath;
         private String outputRootPath;
+        private String sourceRootPath;
         private String type;
         private List<FilesDTO> files;
 

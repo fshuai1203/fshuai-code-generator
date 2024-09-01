@@ -3,9 +3,11 @@ package com.fshuai.maker.generator.main;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
-import com.fshuai.maker.generator.JarGenerator;
+import com.fshuai.maker.generator.commandProcess.GitGenerator;
+import com.fshuai.maker.generator.commandProcess.JarGenerator;
 import com.fshuai.maker.generator.ScriptGenerator;
 import com.fshuai.maker.generator.file.DynamicFileGenerator;
+import com.fshuai.maker.generator.file.StaticFileGenerator;
 import com.fshuai.maker.meta.Meta;
 import com.fshuai.maker.meta.MetaManager;
 import freemarker.template.TemplateException;
@@ -25,6 +27,11 @@ public class MainGenerator {
         if (!FileUtil.exist(outputPath)) {
             FileUtil.mkdir(outputPath);
         }
+
+        // 复制源模版文件
+        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
+        String sourceCopyDestPath = outputPath + File.separator + ".source";
+        StaticFileGenerator.copyFilesByHutool(sourceRootPath, sourceCopyDestPath);
 
         // 读取resource目录
         ClassPathResource classPathResource = new ClassPathResource("");
@@ -95,6 +102,37 @@ public class MainGenerator {
         String jarName = String.format("%s-%s-jar-with-dependencies.jar", meta.getName(), meta.getVersion());
         String jarPath = "target/" + jarName;
         ScriptGenerator.doGenerate(shellOutputFilePath, jarPath);
+
+        // 生成README文件
+        inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
+        outputFilePath = outputPath + File.separator + "README.md";
+        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+
+        // 生成精简版的程序（产物包）
+        String distOutputPath = outputPath + "-dist";
+        // - 拷贝 jar 包
+        String targetAbsolutePath = distOutputPath + File.separator + "target";
+        FileUtil.mkdir(targetAbsolutePath);
+        String jarAbsolutePath = outputPath + File.separator + jarPath;
+        FileUtil.copy(jarAbsolutePath, targetAbsolutePath, true);
+        // - 拷贝脚本文件
+        FileUtil.copy(shellOutputFilePath, distOutputPath, true);
+//        FileUtil.copy(shellOutputFilePath + ".bat", distOutputPath, true);
+        // - 拷贝源模板文件
+        FileUtil.copy(sourceCopyDestPath, distOutputPath, true);
+
+        // 检查是否开启git
+        if (meta.getUseGit()) {
+            // gitignore所在目录
+            String gitIgnoreInputPath = new File(projectPath).getParentFile().getPath() + File.separator + ".gitignore";
+            // 复制到生成文件中
+            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, outputPath + File.separator + ".gitignore");
+            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, distOutputPath + File.separator + ".gitignore");
+
+            // git初始化
+            GitGenerator.doGenerate(outputPath);
+            GitGenerator.doGenerate(distOutputPath);
+        }
 
     }
 
