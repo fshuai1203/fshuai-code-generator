@@ -26,10 +26,11 @@ public class MetaManager {
         // 读取元数据的json
         String metaJson = ResourceUtil.readUtf8Str("meta.json");
         // 把Json数据转换位Bean
-        Meta newMeta = JSONUtil.toBean(metaJson, Meta.class);
-        //:todo 处理和校验默认值
-        Meta.FileConfigDTO fileConfig = newMeta.getFileConfig();
-        return newMeta;
+        Meta meta = JSONUtil.toBean(metaJson, Meta.class);
+        // 处理和校验默认值
+        MetaValidator.doValidAndFill(meta);
+        Meta.FileConfigDTO fileConfig = meta.getFileConfig();
+        return meta;
     }
 
 }
