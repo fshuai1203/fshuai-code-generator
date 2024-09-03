@@ -6,6 +6,7 @@ package com.fshuai.maker.meta.enums;
 public enum ModelTypeEnum {
 
     STRING("字符串", "String"),
+    MAINTEMPLATE("核心模块", "MainTemplate"),
     BOOLEAN("布尔", "boolean");
 
     private final String text;

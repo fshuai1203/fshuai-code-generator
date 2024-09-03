@@ -24,22 +24,35 @@
 
 ## 示例命令
 
-`generator generate <#list modelConfig.models as model> - ${model.abbr}</#list>`
+`generator generate <#list modelConfig.models as model> <#if (modelInfo.abbr) ??>- ${model.abbr}</#if></#list>`
 
 
 
 ## 参数说明
 
+<#macro paramInfo indet modelInfo>
+**${modelInfo.fieldName}**
+
+${indet}类型:${modelInfo.type}
+
+${indet}描述:${modelInfo.description}
+
+${indet}默认值:${modelInfo.defaultValue?c}
+
+<#if (modelInfo.abbr) ??>${indet}缩写:-${modelInfo.abbr}</#if>
+
+</#macro>
+
 <#list modelConfig.models as modelInfo>
-
-${modelInfo?index+1}) **${modelInfo.fieldName}**
-
-类型:${modelInfo.type}
-
-描述:${modelInfo.description}
-
-默认值:${modelInfo.defaultValue?c}
-
-缩写:-${modelInfo.abbr}
+<#if modelInfo.groupKey??>
+**${modelInfo.groupName}-${modelInfo.groupKey}**
+--------------
+<#list modelInfo.models as subModelInfo>
+<@paramInfo indet="- " modelInfo=subModelInfo/>
+</#list>
+-------
+<#else >
+<@paramInfo indet="- " modelInfo=modelInfo/>
+</#if>
 
 </#list>

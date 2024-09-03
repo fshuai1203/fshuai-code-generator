@@ -158,3 +158,4 @@ Temporary Items
 /fshuai-gengerator-demo-projects/.idea/
 !/.gitignore
 *.iml
+/fshuai-gengerator-demo-projects/springboot-init-master/

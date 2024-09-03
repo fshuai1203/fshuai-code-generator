@@ -5,7 +5,6 @@
   "version": "1.0",
   "author": "fshuai",
   "createTime": "2024-08-28",
-  "useGit": true,
   "fileConfig": {
     "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
@@ -13,47 +12,70 @@
     "type": "dir",
     "files": [
       {
+        "groupKey": "git",
+        "groupName": "开源",
+        "type": "group",
+        "condition": "needGit",
+        "files": [
+          {
+            "inputPath": ".gitignore",
+            "outputPath": ".gitignore",
+            "type": "file",
+            "generateType": "static"
+          },
+          {
+            "inputPath": "README.md",
+            "outputPath": "README.md",
+            "type": "file",
+            "generateType": "static"
+          }
+        ]
+      },
+      {
         "inputPath": "src/com/fshuai/acm/MainTemplate.java.ftl",
         "outputPath": "src/com/fshuai/acm/MainTemplate.java",
         "type": "file",
         "generateType": "dynamic"
-      },
-      {
-        "inputPath": ".gitignore",
-        "outputPath": ".gitignore",
-        "type": "file",
-        "generateType": "static"
-      },
-      {
-        "inputPath": "README.md",
-        "outputPath": "README.md",
-        "type": "file",
-        "generateType": "static"
       }
     ]
   },
   "modelConfig": {
     "models": [
       {
+        "fieldName": "needGit",
+        "type": "boolean",
+        "description": "是否初始化git",
+        "defaultValue": false
+      },
+      {
+        "groupKey": "mainTemplate",
+        "groupName": "核心模块",
+        "type": "MainTemplate",
+        "description": "用于生成核心模版文件",
+        "condition": "loop",
+        "models": [
+          {
+            "fieldName": "author",
+            "type": "String",
+            "description": "作者注释",
+            "defaultValue": "fshuai",
+            "abbr": "a"
+          },
+          {
+            "fieldName": "outputText",
+            "type": "String",
+            "description": "输出信息",
+            "defaultValue": "sum = ",
+            "abbr": "o"
+          }
+        ]
+      },
+      {
         "fieldName": "loop",
         "type": "boolean",
         "description": "是否生成循环",
         "defaultValue": false,
         "abbr": "l"
-      },
-      {
-        "fieldName": "author",
-        "type": "String",
-        "description": "作者注释",
-        "defaultValue": "yupi",
-        "abbr": "a"
-      },
-      {
-        "fieldName": "outputText",
-        "type": "String",
-        "description": "输出信息",
-        "defaultValue": "sum = ",
-        "abbr": "o"
       }
     ]
   }

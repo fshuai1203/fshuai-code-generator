@@ -12,6 +12,7 @@ import com.fshuai.maker.meta.enums.ModelTypeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 元信息校验
@@ -29,15 +30,26 @@ public class MetaValidator {
 
     private static void validateAndFillModelConfig(Meta meta) {
         // modelConfig 校验和默认值
-        Meta.ModelConfigDTO modelConfig = meta.getModelConfig();
+        Meta.ModelConfig modelConfig = meta.getModelConfig();
         if (modelConfig == null) {
             return;
         }
-        List<Meta.ModelConfigDTO.ModelsDTO> modelInfoList = modelConfig.getModels();
-        if (!CollectionUtil.isNotEmpty(modelInfoList)) {
+        List<Meta.ModelConfig.ModelInfo> modelInfoInfoList = modelConfig.getModels();
+        if (!CollectionUtil.isNotEmpty(modelInfoInfoList)) {
             return;
         }
-        for (Meta.ModelConfigDTO.ModelsDTO modelInfo : modelInfoList) {
+        for (Meta.ModelConfig.ModelInfo modelInfo : modelInfoInfoList) {
+            // 如果是group，则不校验
+            String groupKey = modelInfo.getGroupKey();
+            // 如果是group，则拼接子模型的变量
+            if (StrUtil.isNotEmpty(groupKey)) {
+                List<Meta.ModelConfig.ModelInfo> subModelInfoList = modelInfo.getModels();
+                String allArgStr = subModelInfoList.stream()
+                        .map(subModelInfo -> String.format("\"--%s\"", subModelInfo.getFieldName()))
+                        .collect(Collectors.joining(", "));
+                modelInfo.setAllArgStr(allArgStr);
+                continue;
+            }
             // 输出路径默认值
             String fieldName = modelInfo.getFieldName();
             if (StrUtil.isBlank(fieldName)) {
@@ -81,11 +93,16 @@ public class MetaValidator {
         }
 
         // fileInfo 默认值
-        List<Meta.FileConfigDTO.FilesDTO> fileInfoList = fileConfig.getFiles();
+        List<Meta.FileConfigDTO.FileInfo> fileInfoList = fileConfig.getFiles();
         if (!CollectionUtil.isNotEmpty(fileInfoList)) {
             return;
         }
-        for (Meta.FileConfigDTO.FilesDTO fileInfo : fileInfoList) {
+        for (Meta.FileConfigDTO.FileInfo fileInfo : fileInfoList) {
+            // 对于组来说，不需要校验
+            String type = fileInfo.getType();
+            if (FileTypeEnum.GROUP.getValue().equals(type)) {
+                continue;
+            }
             // inputPath: 必填
             String inputPath = fileInfo.getInputPath();
             if (StrUtil.isBlank(inputPath)) {
@@ -98,7 +115,6 @@ public class MetaValidator {
                 fileInfo.setOutputPath(inputPath);
             }
             // type：默认 inputPath 有文件后缀（如 .java）为 file，否则为 dir
-            String type = fileInfo.getType();
             if (StrUtil.isBlank(type)) {
                 // 无文件后缀
                 if (StrUtil.isBlank(FileUtil.getSuffix(inputPath))) {
