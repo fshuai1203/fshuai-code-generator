@@ -10,9 +10,6 @@ import cn.hutool.json.JSONUtil;
 import com.fshuai.maker.meta.Meta;
 import com.fshuai.maker.meta.enums.FileGenerateTypeEnum;
 import com.fshuai.maker.meta.enums.FileTypeEnum;
-import com.fshuai.maker.template.enums.FileFilterRangeEnum;
-import com.fshuai.maker.template.enums.FileFilterRuleEnum;
-import com.fshuai.maker.template.model.FileFilterConfig;
 import com.fshuai.maker.template.model.TemplateMakerFileConfig;
 import com.fshuai.maker.template.model.TemplateMakerModelConfig;
 
@@ -23,87 +20,7 @@ import java.util.stream.Collectors;
 
 public class TemplateMaker {
 
-    public static void main(String[] args) {
-        Meta meta = new Meta();
-        // 1. 项目的基本信息
-        //  "name": "acm-template-pro-generator",
-        //  "description": "ACM 示例模板生成器",
-        meta.setName("acm-template-pro-generator");
-        meta.setDescription("ACM 示例模板生成器");
 
-        String projectPath = System.getProperty("user.dir");
-        String originProjectPath = new File(projectPath).getParent() + File.separator + "fshuai-gengerator-demo-projects/springboot-init-master";
-
-
-        // 第一次替换
-        // 输入模型参数信息
-//        Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
-//        modelInfo.setFieldName("outputText");
-//        modelInfo.setType("String");
-//        modelInfo.setDefaultValue("sum=");
-
-//        String searchStr = "Sum: ";
-
-        // 第二次替换
-        Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
-        modelInfo.setFieldName("package");
-        modelInfo.setType("String");
-
-        String fileInputPath1 = "src/main/java/com/yupi/springbootinit/common";
-        String fileInputPath2 = "src/main/resources/application.yml";
-
-
-        TemplateMakerFileConfig templateMakerFileConfig = new TemplateMakerFileConfig();
-
-
-        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
-//        fileInfoConfig1.setPath(fileInputPath1);
-//        List<FileFilterConfig> filterConfigList = new ArrayList<>();
-//        FileFilterConfig fileFilterConfig = FileFilterConfig.builder()
-//                .range(FileFilterRangeEnum.FILE_NAME.getValue())
-//                .rule(FileFilterRuleEnum.CONTAINS.getValue())
-//                .value("Base")
-//                .build();
-//        filterConfigList.add(fileFilterConfig);
-//        fileInfoConfig1.setFilterConfigList(filterConfigList);
-
-        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig2 = new TemplateMakerFileConfig.FileInfoConfig();
-        fileInfoConfig2.setPath(fileInputPath2);
-        templateMakerFileConfig.setFiles(Arrays.asList( fileInfoConfig2));
-
-        TemplateMakerFileConfig.FileGroupConfig fileGroupConfig = new TemplateMakerFileConfig.FileGroupConfig();
-        fileGroupConfig.setCondition("outputText");
-        fileGroupConfig.setGroupKey("test");
-        fileGroupConfig.setGroupName("测试分组");
-        templateMakerFileConfig.setFileGroupConfig(fileGroupConfig);
-
-        // 模型参数配置
-        TemplateMakerModelConfig templateMakerModelConfig = new TemplateMakerModelConfig();
-
-        // 模型组配置
-        TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = new TemplateMakerModelConfig.ModelGroupConfig();
-        modelGroupConfig.setGroupKey("mysql");
-        modelGroupConfig.setGroupName("数据库配置");
-        templateMakerModelConfig.setModelGroupConfig(modelGroupConfig);
-
-        // 模型配置
-        TemplateMakerModelConfig.ModelInfoConfig modelInfoConfig1 = new TemplateMakerModelConfig.ModelInfoConfig();
-        modelInfoConfig1.setFieldName("url");
-        modelInfoConfig1.setType("string");
-        modelInfoConfig1.setDefaultValue("jdbc:mysql://localhost:3306/my_db");
-        modelInfoConfig1.setReplaceText("jdbc:mysql://localhost:3306/my_db");
-
-        TemplateMakerModelConfig.ModelInfoConfig modelInfoConfig2 = new TemplateMakerModelConfig.ModelInfoConfig();
-        modelInfoConfig2.setFieldName("username");
-        modelInfoConfig2.setType("String");
-        modelInfoConfig2.setDefaultValue("root");
-        modelInfoConfig2.setReplaceText("root");
-
-        List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig1, modelInfoConfig2);
-        templateMakerModelConfig.setModels(modelInfoConfigList);
-        Long id = makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1834525792556003328L);
-        System.out.println(id);
-    }
 
     /**
      * 生成模版
@@ -115,7 +32,7 @@ public class TemplateMaker {
      * @param id                       生成的临时文件夹的名称(ID)
      * @return
      */
-    private static Long makeTemplate(Meta newMeta,
+    public static Long makeTemplate(Meta newMeta,
                                      String originProjectPath,
                                      TemplateMakerFileConfig templateMakerFileConfig,
                                      TemplateMakerModelConfig templateMakerModelConfig,
@@ -291,7 +208,8 @@ public class TemplateMaker {
         String fileOutputAbsolutePath = inputFile.getAbsolutePath() + ".ftl";
 
         String fileContent = null;
-        if (!FileUtil.exist(fileOutputAbsolutePath)) {
+        boolean hasTemplateFile = FileUtil.exist(fileOutputAbsolutePath);
+        if (!hasTemplateFile) {
             // 首次制作
             // 使用字符串替换，生成模版文件
 
@@ -326,18 +244,25 @@ public class TemplateMaker {
         fileInfo.setInputPath(fileInputPath);
         fileInfo.setOutputPath(fileOutputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
+        // 默认设置成动态
+        fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
 
-        // 对于没有修改的文件则直接静态生成
-        if (newFileContent.equals(fileContent)) {
-            // 输出路径等于输入路径
-            fileInfo.setOutputPath(fileInputPath);
-            fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
-        } else {
-            // 生成模版文件
-            fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
-            // 输出模版文件
+        boolean contentEquals = newFileContent.equals(fileContent);
+        // 只有之前没有模版文件，且替换后没有改变的才是静态生成
+        if (!hasTemplateFile) {
+            if (contentEquals) {
+                // 没有模版文件，且没有发生改变
+                fileInfo.setOutputPath(fileInputPath);
+                fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
+            } else {
+                FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
+            }
+        } else if (!contentEquals) {
+            // 有模版文件，且发生了改变，则在生成模版文件
             FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
         }
+        //之前有模版文件，但是没有发生改变，则不需要更新
+
         return fileInfo;
     }
 
