@@ -246,8 +246,9 @@ public class TemplateMaker {
         // 3-非首次制作，在原有元信息配置上进行修改
         // 文件配置信息，无论修改还是新增，文件信息一定是存在的
         Meta.FileConfigDTO.FileInfo fileInfo = new Meta.FileConfigDTO.FileInfo();
-        fileInfo.setInputPath(fileInputPath);
-        fileInfo.setOutputPath(fileOutputPath);
+        // 对于配置文件来说，输入应该时模版文件，输出应该是原始文件(这里的输入路径与输出路径要进行反转)
+        fileInfo.setInputPath(fileOutputPath);
+        fileInfo.setOutputPath(fileInputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
         // 默认设置成动态
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
@@ -257,7 +258,8 @@ public class TemplateMaker {
         if (!hasTemplateFile) {
             if (contentEquals) {
                 // 没有模版文件，且没有发生改变
-                fileInfo.setOutputPath(fileInputPath);
+                // 输入路径没有FTL后缀
+                fileInfo.setInputPath(fileInputPath);
                 fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
             } else {
                 FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
@@ -293,7 +295,7 @@ public class TemplateMaker {
                     // 将嵌套的文件信息列表展平为文件信息流(将多个FileInfo的file列表信息合并成一个file列表信息)
                     .flatMap(fileInfo -> fileInfo.getFiles().stream())
                     // 通过文件的输入路径进行分组，并在有键冲突时保留右侧值(按照file的输入路径进行去重)
-                    .collect(Collectors.toMap(Meta.FileConfigDTO.FileInfo::getInputPath, o -> o, (e, r) -> r))
+                    .collect(Collectors.toMap(Meta.FileConfigDTO.FileInfo::getOutputPath, o -> o, (e, r) -> r))
                     .values());
 
             // 使用新的group进行配置
