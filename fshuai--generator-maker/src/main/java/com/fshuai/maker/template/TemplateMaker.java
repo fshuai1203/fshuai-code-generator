@@ -84,8 +84,13 @@ public class TemplateMaker {
             // 过滤文件
             List<File> filterFiles = FileFilter.doFilter(inputFilePath, fileInfoConfig.getFilterConfigList());
 
+            // 不处理已经生成的FTL模版文件
+            List<File> fileList = filterFiles.stream()
+                    .filter(file -> !file.getAbsolutePath().endsWith(".ftl"))
+                    .collect(Collectors.toList());
+
             // 处理过滤后的文件
-            for (File file : filterFiles) {
+            for (File file : fileList) {
                 // 生成文件模版
                 Meta.FileConfigDTO.FileInfo fileInfo = makeFileTemplate(file, templateMakerModelConfig, sourceRootPath);
                 // 添加到文件信息列表

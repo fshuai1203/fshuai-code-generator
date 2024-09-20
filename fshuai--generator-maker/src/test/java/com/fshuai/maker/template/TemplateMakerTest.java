@@ -143,4 +143,38 @@ public class TemplateMakerTest {
         System.out.println(id);
 
     }
+
+    @Test
+    public void testMakeTemplateBug2(){
+        Meta meta = new Meta();
+        // 1. 项目的基本信息
+        //  "name": "acm-template-pro-generator",
+        //  "description": "ACM 示例模板生成器",
+        meta.setName("acm-template-pro-generator");
+        meta.setDescription("ACM 示例模板生成器");
+
+        String projectPath = System.getProperty("user.dir");
+        String originProjectPath = new File(projectPath).getParent() + File.separator + "fshuai-gengerator-demo-projects/springboot-init-master";
+
+        String fileInputPath = "src/main/java/com/yupi/springbootinit/common";
+        TemplateMakerFileConfig templateMakerFileConfig = new TemplateMakerFileConfig();
+        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
+        fileInfoConfig1.setPath(fileInputPath);
+        templateMakerFileConfig.setFiles(Arrays.asList(fileInfoConfig1));
+
+        // 模型参数配置
+        TemplateMakerModelConfig templateMakerModelConfig = new TemplateMakerModelConfig();
+
+        TemplateMakerModelConfig.ModelInfoConfig modelInfoConfig = new TemplateMakerModelConfig.ModelInfoConfig();
+        modelInfoConfig.setFieldName("className");
+        modelInfoConfig.setType("String");
+        modelInfoConfig.setReplaceText("BaseResponse");
+
+        List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig);
+        templateMakerModelConfig.setModels(modelInfoConfigList);
+
+        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836956555862626304L);
+        System.out.println(id);
+
+    }
 }
