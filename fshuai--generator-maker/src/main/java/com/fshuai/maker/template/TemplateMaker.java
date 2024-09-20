@@ -155,8 +155,8 @@ public class TemplateMaker {
         }
 
 
-        // 生成配置文件
-        String metaOutputPath = sourceRootPath + File.separator + "meta.json";
+        // 生成配置文件,与项目同级
+        String metaOutputPath = templatePath + File.separator + "meta.json";
 
         // 如果配置文件不存在，则创建新配置
         if (!FileUtil.exist(metaOutputPath)) {
