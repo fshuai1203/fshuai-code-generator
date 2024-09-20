@@ -1,6 +1,9 @@
 package com.fshuai.maker.template;
 
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.json.JSONUtil;
 import com.fshuai.maker.meta.Meta;
+import com.fshuai.maker.template.model.TemplateMakerConfig;
 import com.fshuai.maker.template.model.TemplateMakerFileConfig;
 import com.fshuai.maker.template.model.TemplateMakerModelConfig;
 import org.junit.Test;
@@ -101,7 +104,7 @@ public class TemplateMakerTest {
      * 测试同配置多次生成时，强制变成静态文件
      */
     @Test
-    public void testMakeTemplateBug1(){
+    public void testMakeTemplateBug1() {
         Meta meta = new Meta();
         // 1. 项目的基本信息
         //  "name": "acm-template-pro-generator",
@@ -145,7 +148,7 @@ public class TemplateMakerTest {
     }
 
     @Test
-    public void testMakeTemplateBug2(){
+    public void testMakeTemplateBug2() {
         Meta meta = new Meta();
         // 1. 项目的基本信息
         //  "name": "acm-template-pro-generator",
@@ -156,7 +159,7 @@ public class TemplateMakerTest {
         String projectPath = System.getProperty("user.dir");
         String originProjectPath = new File(projectPath).getParent() + File.separator + "fshuai-gengerator-demo-projects/springboot-init-master";
 
-        String fileInputPath = "src/main/java/com/yupi/springbootinit/common";
+        String fileInputPath = "./";
         TemplateMakerFileConfig templateMakerFileConfig = new TemplateMakerFileConfig();
         TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
         fileInfoConfig1.setPath(fileInputPath);
@@ -173,8 +176,16 @@ public class TemplateMakerTest {
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig);
         templateMakerModelConfig.setModels(modelInfoConfigList);
 
-        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836956555862626304L);
+        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836970835907502080L);
         System.out.println(id);
 
+    }
+
+    @Test
+    public void testMakeTemplateWithJson() {
+        String configStr = ResourceUtil.readUtf8Str("templateMaker.json");
+        TemplateMakerConfig templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        Long id = TemplateMaker.makeTemplate(templateMakerConfig);
+        System.out.println(id);
     }
 }

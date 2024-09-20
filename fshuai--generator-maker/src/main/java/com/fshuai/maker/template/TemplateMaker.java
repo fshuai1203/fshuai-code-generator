@@ -10,6 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.fshuai.maker.meta.Meta;
 import com.fshuai.maker.meta.enums.FileGenerateTypeEnum;
 import com.fshuai.maker.meta.enums.FileTypeEnum;
+import com.fshuai.maker.template.model.TemplateMakerConfig;
 import com.fshuai.maker.template.model.TemplateMakerFileConfig;
 import com.fshuai.maker.template.model.TemplateMakerModelConfig;
 
@@ -21,6 +22,14 @@ import java.util.stream.Collectors;
 public class TemplateMaker {
 
 
+    public static Long makeTemplate(TemplateMakerConfig templateMakerConfig) {
+        return makeTemplate(
+                templateMakerConfig.getMeta(),
+                templateMakerConfig.getOriginProjectPath(),
+                templateMakerConfig.getFileConfig(),
+                templateMakerConfig.getModelConfig(),
+                templateMakerConfig.getId());
+    }
 
     /**
      * 生成模版
@@ -33,10 +42,10 @@ public class TemplateMaker {
      * @return
      */
     public static Long makeTemplate(Meta newMeta,
-                                     String originProjectPath,
-                                     TemplateMakerFileConfig templateMakerFileConfig,
-                                     TemplateMakerModelConfig templateMakerModelConfig,
-                                     Long id) {
+                                    String originProjectPath,
+                                    TemplateMakerFileConfig templateMakerFileConfig,
+                                    TemplateMakerModelConfig templateMakerModelConfig,
+                                    Long id) {
         // 如果未提供ID，生成一个唯一ID
         if (id == null) {
             // 工作空间隔离
