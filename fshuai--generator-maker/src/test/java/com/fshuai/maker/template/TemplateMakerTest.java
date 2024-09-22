@@ -96,7 +96,7 @@ public class TemplateMakerTest {
 
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig1, modelInfoConfig2);
         templateMakerModelConfig.setModels(modelInfoConfigList);
-        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836938208898977792L);
+        long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig,null, 1836938208898977792L);
         System.out.println(id);
     }
 
@@ -142,7 +142,7 @@ public class TemplateMakerTest {
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig1);
         templateMakerModelConfig.setModels(modelInfoConfigList);
 
-        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836947903231578112L);
+        long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig,null, 1836947903231578112L);
         System.out.println(id);
 
     }
@@ -176,7 +176,7 @@ public class TemplateMakerTest {
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig);
         templateMakerModelConfig.setModels(modelInfoConfigList);
 
-        Long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1836970835907502080L);
+        long id = TemplateMaker.makeTemplate(meta, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, null,1836970835907502080L);
         System.out.println(id);
 
     }
@@ -185,7 +185,7 @@ public class TemplateMakerTest {
     public void testMakeTemplateWithJson() {
         String configStr = ResourceUtil.readUtf8Str("templateMaker.json");
         TemplateMakerConfig templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
-        Long id = TemplateMaker.makeTemplate(templateMakerConfig);
+        long id = TemplateMaker.makeTemplate(templateMakerConfig);
         System.out.println(id);
     }
 
@@ -194,16 +194,19 @@ public class TemplateMakerTest {
      */
     @Test
     public void makeSpringBootTemplate() {
+
+        makeTemplateByConfigFile("templateMaker.json");
+        makeTemplateByConfigFile("templateMaker1.json");
+        long id = makeTemplateByConfigFile("templateMaker2.json");
+        System.out.println(id);
+    }
+
+    private long makeTemplateByConfigFile(String configFileName) {
         String rootPath = "examples/springboot-init/";
-        String configStr = ResourceUtil.readUtf8Str(rootPath + "templateMaker.json");
+        String configStr  = ResourceUtil.readUtf8Str(rootPath + configFileName);
         TemplateMakerConfig templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         // 增加对象非空校验
-        Long id = TemplateMaker.makeTemplate(templateMakerConfig);
-
-        configStr = ResourceUtil.readUtf8Str(rootPath + "templateMaker1.json");
-        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
-        TemplateMaker.makeTemplate(templateMakerConfig);
-
-        System.out.println(id);
+        long id = TemplateMaker.makeTemplate(templateMakerConfig);
+        return id;
     }
 }

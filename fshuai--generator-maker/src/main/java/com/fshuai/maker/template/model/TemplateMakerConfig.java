@@ -19,4 +19,7 @@ public class TemplateMakerConfig {
 
     TemplateMakerFileConfig fileConfig = new TemplateMakerFileConfig();
 
+    // 控制去重
+    TemplateMakerOutputConfig outputConfig = new TemplateMakerOutputConfig();
+
 }

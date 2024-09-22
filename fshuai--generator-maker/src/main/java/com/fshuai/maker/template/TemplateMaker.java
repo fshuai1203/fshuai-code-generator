@@ -13,6 +13,7 @@ import com.fshuai.maker.meta.enums.FileTypeEnum;
 import com.fshuai.maker.template.model.TemplateMakerConfig;
 import com.fshuai.maker.template.model.TemplateMakerFileConfig;
 import com.fshuai.maker.template.model.TemplateMakerModelConfig;
+import com.fshuai.maker.template.model.TemplateMakerOutputConfig;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -22,12 +23,13 @@ import java.util.stream.Collectors;
 public class TemplateMaker {
 
 
-    public static Long makeTemplate(TemplateMakerConfig templateMakerConfig) {
+    public static long makeTemplate(TemplateMakerConfig templateMakerConfig) {
         return makeTemplate(
                 templateMakerConfig.getMeta(),
                 templateMakerConfig.getOriginProjectPath(),
                 templateMakerConfig.getFileConfig(),
                 templateMakerConfig.getModelConfig(),
+                templateMakerConfig.getOutputConfig(),
                 templateMakerConfig.getId());
     }
 
@@ -41,10 +43,11 @@ public class TemplateMaker {
      * @param id                       生成的临时文件夹的名称(ID)
      * @return
      */
-    public static Long makeTemplate(Meta newMeta,
+    public static long makeTemplate(Meta newMeta,
                                     String originProjectPath,
                                     TemplateMakerFileConfig templateMakerFileConfig,
                                     TemplateMakerModelConfig templateMakerModelConfig,
+                                    TemplateMakerOutputConfig templateMakerOutputConfig,
                                     Long id) {
         // 如果未提供ID，生成一个唯一ID
         if (id == null) {
@@ -116,6 +119,15 @@ public class TemplateMaker {
             // 去重
             newMeta.getFileConfig().setFiles(distinctFiles(fileInfoList));
             newMeta.getModelConfig().setModels(distinctModels(modelInfoList));
+        }
+
+        //  额外的输出配置
+        if (templateMakerOutputConfig != null) {
+            // 文件外层和分组去重
+            if (templateMakerOutputConfig.isRemoveGroupFilesFromRoot()) {
+                List<Meta.FileConfigDTO.FileInfo> fileInfoList = newMeta.getFileConfig().getFiles();
+                newMeta.getFileConfig().setFiles(TemplateMakerUtils.removeGroupFilesFromRoot(fileInfoList));
+            }
         }
 
         // 写入元信息文件
