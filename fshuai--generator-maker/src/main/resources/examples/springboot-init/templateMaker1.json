@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "fileConfig": {
+    "files": [
+      {
+        "path": ""
+      }
+    ]
+  },
+  "modelConfig": {
+    "models": [
+      {
+        "fieldName": "basePackage",
+        "type": "String",
+        "defaultValue": "com.fshuai",
+        "replaceText": "com.yupi",
+        "description": "基础包名"
+      }
+    ]
+  }
+}
