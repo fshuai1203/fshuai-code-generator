@@ -43,17 +43,29 @@ public class MainGenerator {
 
         <#if fileInfo.groupKey??>
         // groupKey = ${fileInfo.groupKey}
-        </#if>
         <#if (fileInfo.condition)??>
         if (${fileInfo.condition}) {
-            <#list fileInfo.files as fileInfo>
-            <@generateFile "        ",fileInfo/>
+                <#list fileInfo.files as fileInfo>
+                    <@generateFile "        ",fileInfo/>
 
-            </#list>
+                </#list>
         }
         <#else >
-       <@generateFile "    ",fileInfo/>
+                <#list fileInfo.files as fileInfo>
+                    <@generateFile "        ",fileInfo/>
+
+                </#list>
         </#if>
+        <#else>
+            <#if (fileInfo.condition)??>
+        if (${fileInfo.condition}) {
+                <@generateFile "        ",fileInfo/>
+        }
+            <#else >
+                <@generateFile "    ",fileInfo/>
+            </#if>
+        </#if>
+
     </#list>
 
     }

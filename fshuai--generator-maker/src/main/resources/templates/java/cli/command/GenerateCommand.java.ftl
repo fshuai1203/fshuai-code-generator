@@ -9,15 +9,15 @@ import picocli.CommandLine;
 import java.util.concurrent.Callable;
 <#--生成式选项-->
 <#macro generateOption indent modelInfo>
-${indent}@CommandLine.Option(names = {<#if modelInfo.abbr??>"-${modelInfo.abbr}",</#if>"--${modelInfo.fieldName}" },<#if modelInfo.description??>description = "${modelInfo.description}",</#if> interactive = true, arity = "0..1", echo = true)
-${indent}private ${modelInfo.type} ${modelInfo.fieldName};
+${indent}@CommandLine.Option(names = {<#if modelInfo.abbr??>"-${modelInfo.abbr}",</#if>"--${modelInfo.fieldName}"},<#if modelInfo.description??> description = "${modelInfo.description}",</#if> interactive = true, arity = "0..1", echo = true)
+${indent}private ${modelInfo.type} ${modelInfo.fieldName}<#if modelInfo.defaultValue??> = ${modelInfo.defaultValue?c}</#if>;
 </#macro>
 
 <#-- 生成式命令调用-->
 <#macro generateCommand indent modelInfo>
 ${indent}System.out.println("请输入${modelInfo.groupName}配置");
-${indent}CommandLine commandLine = new CommandLine(${modelInfo.type}Command.class);
-${indent}commandLine.execute(${modelInfo.allArgStr});
+${indent}CommandLine ${modelInfo.groupKey}CommandLine = new CommandLine(${modelInfo.type}Command.class);
+${indent}${modelInfo.groupKey}CommandLine.execute(${modelInfo.allArgStr});
 </#macro>
 /**
 * 生成文件指令
@@ -57,13 +57,11 @@ public class GenerateCommand implements Callable {
     <#list modelConfig.models as modelInfo>
         <#if modelInfo.groupKey??>
         <#if modelInfo.condition??>
-         if (${modelInfo.condition}) {
-             <@generateCommand indent="            " modelInfo=modelInfo/>
-         }
-        <#else>
-            <#list modelInfo.models as subModelInfo>
-                <@generateCommand indent="    " modelInfo=modelInfo/>
-            </#list>
+        if (${modelInfo.condition}) {
+            <@generateCommand indent="             " modelInfo=modelInfo/>
+        }
+        <#else >
+            <@generateCommand indent="        " modelInfo=modelInfo/>
         </#if>
         </#if>
     </#list>

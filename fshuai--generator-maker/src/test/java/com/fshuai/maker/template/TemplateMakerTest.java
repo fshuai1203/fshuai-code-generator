@@ -195,13 +195,15 @@ public class TemplateMakerTest {
     @Test
     public void makeSpringBootTemplate() {
 
-        makeTemplateByConfigFile("templateMaker.json");
-        makeTemplateByConfigFile("templateMaker1.json");
-        makeTemplateByConfigFile("templateMaker2.json");
-        makeTemplateByConfigFile("templateMaker3.json");
-        makeTemplateByConfigFile("templateMaker4.json");
-        makeTemplateByConfigFile("templateMaker5.json");
-        makeTemplateByConfigFile("templateMaker6.json");
+//        makeTemplateByConfigFile("templateMaker.json");
+//        makeTemplateByConfigFile("templateMaker1.json");
+//        makeTemplateByConfigFile("templateMaker2.json");
+//        makeTemplateByConfigFile("templateMaker3.json");
+//        makeTemplateByConfigFile("templateMaker4.json");
+//        makeTemplateByConfigFile("templateMaker5.json");
+//        makeTemplateByConfigFile("templateMaker6.json");
+//        makeTemplateByConfigFile("templateMaker7.json");
+        makeTemplateByConfigFile("templateMaker8.json");
     }
 
     private long makeTemplateByConfigFile(String configFileName) {
