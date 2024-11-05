@@ -138,7 +138,7 @@ public class TemplateMaker {
 
     /**
      * 从模板制作模型配置中提取模型信息列表
-     *
+     * <p>
      * 此方法主要用于处理模板制作模型配置，将其转换为模型信息列表（ModelInfo），
      * 并根据配置中的分组信息（如果有）进行相应的处理
      *
@@ -174,14 +174,9 @@ public class TemplateMaker {
         TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = templateMakerModelConfig.getModelGroupConfig();
 
         if (modelGroupConfig != null) {
-            String condition = modelGroupConfig.getCondition();
-            String groupKey = modelGroupConfig.getGroupKey();
-            String groupName = modelGroupConfig.getGroupName();
             // 新增分组配置
             Meta.ModelConfig.ModelInfo groupModelInfo = new Meta.ModelConfig.ModelInfo();
-            groupModelInfo.setCondition(condition);
-            groupModelInfo.setGroupKey(groupKey);
-            groupModelInfo.setGroupName(groupName);
+            BeanUtil.copyProperties(modelGroupConfig, groupModelInfo);
 
             // 模型全放到一个分组内
             groupModelInfo.setModels(inputModelInfoList);
@@ -196,9 +191,9 @@ public class TemplateMaker {
     /**
      * 根据模板制作文件配置和模型配置创建文件模板
      *
-     * @param templateMakerFileConfig 模板制作文件配置
+     * @param templateMakerFileConfig  模板制作文件配置
      * @param templateMakerModelConfig 模板制作模型配置
-     * @param sourceRootPath 源文件根路径
+     * @param sourceRootPath           源文件根路径
      * @return 返回新的文件信息列表
      */
     private static List<Meta.FileConfigDTO.FileInfo> makeFileTemplates(TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
@@ -276,9 +271,9 @@ public class TemplateMaker {
      * 创建文件模板信息
      *
      * @param templateMakerModelConfig 模板制作模型配置
-     * @param inputFile 输入文件
-     * @param sourceRootPath 源文件根路径
-     * @param fileInfoConfig 文件信息配置
+     * @param inputFile                输入文件
+     * @param sourceRootPath           源文件根路径
+     * @param fileInfoConfig           文件信息配置
      * @return 返回处理后的文件信息对象
      */
     private static Meta.FileConfigDTO.FileInfo makeFileTemplate(TemplateMakerModelConfig templateMakerModelConfig,

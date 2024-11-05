@@ -4,7 +4,8 @@ import java.io.*;
 
 public class JarGenerator {
 
-    public static void doGenerate(String projectDir) throws IOException, InterruptedException {
+    public static void doGenerate(String projectDir) throws IOException,
+            InterruptedException {
         // 清理之前的构建并打包
         String winMavenCommand = "mvn.cmd clean package -DskipTests=true";
         String otherMavenCommand = "mvn clean package -DskipTests=true";

@@ -199,6 +199,8 @@ public class TemplateMakerTest {
         makeTemplateByConfigFile("templateMaker1.json");
         makeTemplateByConfigFile("templateMaker2.json");
         makeTemplateByConfigFile("templateMaker3.json");
+        makeTemplateByConfigFile("templateMaker4.json");
+        makeTemplateByConfigFile("templateMaker5.json");
     }
 
     private long makeTemplateByConfigFile(String configFileName) {
