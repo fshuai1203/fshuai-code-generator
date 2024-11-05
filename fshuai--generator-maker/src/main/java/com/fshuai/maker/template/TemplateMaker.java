@@ -136,6 +136,15 @@ public class TemplateMaker {
         return id;
     }
 
+    /**
+     * 从模板制作模型配置中提取模型信息列表
+     *
+     * 此方法主要用于处理模板制作模型配置，将其转换为模型信息列表（ModelInfo），
+     * 并根据配置中的分组信息（如果有）进行相应的处理
+     *
+     * @param templateMakerModelConfig 模板制作模型配置对象，包含模型配置数据
+     * @return 返回一个ModelInfo对象列表，包含处理后的模型信息
+     */
     private static List<Meta.ModelConfig.ModelInfo> getModelInfoList(TemplateMakerModelConfig templateMakerModelConfig) {
 
         // 本次新增的模型配置列表
@@ -184,6 +193,14 @@ public class TemplateMaker {
         return newModelInfoList;
     }
 
+    /**
+     * 根据模板制作文件配置和模型配置创建文件模板
+     *
+     * @param templateMakerFileConfig 模板制作文件配置
+     * @param templateMakerModelConfig 模板制作模型配置
+     * @param sourceRootPath 源文件根路径
+     * @return 返回新的文件信息列表
+     */
     private static List<Meta.FileConfigDTO.FileInfo> makeFileTemplates(TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
         // 初始化新的文件信息列表
         List<Meta.FileConfigDTO.FileInfo> newFileInfoList = new ArrayList<>();
@@ -224,7 +241,7 @@ public class TemplateMaker {
             // 处理过滤后的文件
             for (File file : fileList) {
                 // 生成文件模版
-                Meta.FileConfigDTO.FileInfo fileInfo = makeFileTemplate(file, templateMakerModelConfig, sourceRootPath);
+                Meta.FileConfigDTO.FileInfo fileInfo = makeFileTemplate(templateMakerModelConfig, file, sourceRootPath, fileInfoConfig);
                 // 添加到文件信息列表
                 newFileInfoList.add(fileInfo);
             }
@@ -255,10 +272,19 @@ public class TemplateMaker {
         return newFileInfoList;
     }
 
-
-    private static Meta.FileConfigDTO.FileInfo makeFileTemplate(File inputFile,
-                                                                TemplateMakerModelConfig templateMakerModelConfig,
-                                                                String sourceRootPath) {
+    /**
+     * 创建文件模板信息
+     *
+     * @param templateMakerModelConfig 模板制作模型配置
+     * @param inputFile 输入文件
+     * @param sourceRootPath 源文件根路径
+     * @param fileInfoConfig 文件信息配置
+     * @return 返回处理后的文件信息对象
+     */
+    private static Meta.FileConfigDTO.FileInfo makeFileTemplate(TemplateMakerModelConfig templateMakerModelConfig,
+                                                                File inputFile,
+                                                                String sourceRootPath,
+                                                                TemplateMakerFileConfig.FileInfoConfig fileInfoConfig) {
 
         // 要挖坑的文件，把绝对路径替换成相对路径
         String fileInputPath = inputFile.getAbsolutePath().replace(sourceRootPath + "/", "");
@@ -308,6 +334,7 @@ public class TemplateMaker {
         fileInfo.setInputPath(fileOutputPath);
         fileInfo.setOutputPath(fileInputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
+        fileInfo.setCondition(fileInfoConfig.getCondition());//给单个文件也设置condition
         // 默认设置成动态
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
 

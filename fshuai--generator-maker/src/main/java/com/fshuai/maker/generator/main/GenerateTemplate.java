@@ -28,7 +28,7 @@ public abstract class GenerateTemplate {
             FileUtil.mkdir(outputPath);
         }
 
-        // 拷贝源文件
+        // 拷贝源文件（最开始的模版）
         String sourceCopyDestPath = copySource(meta, outputPath);
 
         // 代码生成
@@ -48,20 +48,20 @@ public abstract class GenerateTemplate {
 //        gitInit(meta, projectPath, outputPath, distOutputPath);
     }
 
-//    protected void gitInit(Meta meta, String projectPath, String outputPath, String distOutputPath) throws IOException, InterruptedException {
-//        // 检查是否开启git
-//        if (meta.getUseGit()) {
-//            // gitignore所在目录
-//            String gitIgnoreInputPath = new File(projectPath).getParentFile().getPath() + File.separator + ".gitignore";
-//            // 复制到生成文件中
-//            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, outputPath + File.separator + ".gitignore");
-//            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, distOutputPath + File.separator + ".gitignore");
-//
-//            // git初始化
-//            GitGenerator.doGenerate(outputPath);
-//            GitGenerator.doGenerate(distOutputPath);
-//        }
-//    }
+    protected void gitInit(Meta meta, String projectPath, String outputPath, String distOutputPath) throws IOException, InterruptedException {
+        // 检查是否开启git
+        if (meta.getUseGit()) {
+            // gitignore所在目录
+            String gitIgnoreInputPath = new File(projectPath).getParentFile().getPath() + File.separator + ".gitignore";
+            // 复制到生成文件中
+            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, outputPath + File.separator + ".gitignore");
+            StaticFileGenerator.copyFilesByHutool(gitIgnoreInputPath, distOutputPath + File.separator + ".gitignore");
+
+            // git初始化
+            GitGenerator.doGenerate(outputPath);
+            GitGenerator.doGenerate(distOutputPath);
+        }
+    }
 
     protected String buildDist(String outputPath, String jarPath, String shellOutputFilePath, String sourceCopyDestPath) {
         String distOutputPath = outputPath + "-dist";

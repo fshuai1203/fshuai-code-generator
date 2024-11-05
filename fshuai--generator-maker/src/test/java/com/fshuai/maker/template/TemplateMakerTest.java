@@ -197,8 +197,8 @@ public class TemplateMakerTest {
 
         makeTemplateByConfigFile("templateMaker.json");
         makeTemplateByConfigFile("templateMaker1.json");
-        long id = makeTemplateByConfigFile("templateMaker2.json");
-        System.out.println(id);
+        makeTemplateByConfigFile("templateMaker2.json");
+        makeTemplateByConfigFile("templateMaker3.json");
     }
 
     private long makeTemplateByConfigFile(String configFileName) {

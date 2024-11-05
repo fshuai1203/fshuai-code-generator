@@ -1,6 +1,5 @@
 package com.fshuai.maker.template.model;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +15,8 @@ public class TemplateMakerFileConfig {
     @NoArgsConstructor
     @Data
     public static class FileInfoConfig {
+
+        private String condition;
 
         private String path;
 
